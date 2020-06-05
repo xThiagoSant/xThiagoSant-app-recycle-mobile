@@ -1,46 +1,76 @@
-import React from 'react'
-import { View, StyleSheet, Image, Text, ImageBackground} from 'react-native'
+import React, {useState} from 'react'
+import { View, StyleSheet, Image, Text, ImageBackground, TextInput, KeyboardAvoidingView, Platform} from 'react-native'
 import { RectButton} from 'react-native-gesture-handler'
 import { Feather } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 
+//instalar o react-native-picker-select para criar Selects com Cidade e UF do ibge - DESAFIO do DIEGO!
+
 const Home = ()=> {
 
   const navigator = useNavigation();
+  const [uf, setUf] = useState('')
+  const [city, setCity] = useState('')
   
   function handleNavigatePoints(){
-    navigator.navigate('Points')
+    navigator.navigate('Points', {
+      uf,
+      city,
+    })
   }
 
   return (
-    <ImageBackground 
-      source={require('../../assets/home-background.png')} 
-      style = {styles.container}
-      imageStyle={{width:274, height:368}}
-    >
-      <View style={styles.main}>
-        <Image source={require('../../assets/logo.png')} />
-        <Text style={styles.title}>
-          Seu marketplace de coleta de resíduos
-        </Text>
-        <Text style={styles.description}>
-          Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente.
-        </Text>
-      </View>
+    <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ImageBackground 
+          source={require('../../assets/home-background.png')} 
+          style = {styles.container}
+          imageStyle={{width:274, height:368}}
+        >
+          <View style={styles.main}>
+            <Image source={require('../../assets/logo.png')} />
+            <View>
+              <Text style={styles.title}>
+                Seu marketplace de coleta de resíduos
+              </Text>
+              <Text style={styles.description}>
+                Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente.
+              </Text>
+            </View>
 
-      <View style={styles.footer}>
-        <RectButton style={styles.button} onPress={handleNavigatePoints} >
-          <View style={styles.buttonIcon}>
-            <Text>
-              <Feather name="arrow-right" color="#FFF" size={24} />
-            </Text>
+          </View> 
+
+          <View style={styles.footer}>
+            <TextInput 
+            style={styles.input} 
+            placeholder="Digite a UF" 
+            value={uf}
+            autoCapitalize="characters"
+            autoCorrect={false}
+            maxLength={2}
+            onChangeText={text => setUf(text)}//Usando com Arrow Function
+            />
+
+            <TextInput 
+            style={styles.input} 
+            placeholder="Digite a Cidade"
+            value={city}
+            autoCorrect={false}
+            onChangeText={setCity}//como tem apenas um parametro, passo apenas a função
+            />
+
+            <RectButton style={styles.button} onPress={handleNavigatePoints} >
+              <View style={styles.buttonIcon}>
+                <Text>
+                  <Feather name="arrow-right" color="#FFF" size={24} />
+                </Text>
+              </View>
+              <Text style={styles.buttonText}>
+                Entrar
+              </Text>  
+            </RectButton>
           </View>
-          <Text style={styles.buttonText}>
-            Entrar
-          </Text>  
-        </RectButton>
-      </View>
-    </ImageBackground>
+        </ImageBackground>
+    </KeyboardAvoidingView>
   )
 }
 
